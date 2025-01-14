@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Report</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <h1>{{ period|capitalize }} Financial Report - {{ current_month if period == 'monthly' else current_year }}</h1>
+<p>Total Income: ${{ total_income }}</p>
+<p>Total Expenses: ${{ total_expenses }}</p>
+<p>Total Savings: ${{ total_savings }}</p>
+
+<h3>Expenses by Category</h3>
+<ul>
+  {% for category, amount in category_expenses.items() %}
+    <li>{{ category }}: ${{ amount }}</li>
+  {% endfor %}
+</ul>
+
+<a href="/dashboard.html">back to dashboard</a>
+</body>
+</html>

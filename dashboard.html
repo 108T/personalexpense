@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense and Income Tracker</title>
+</head>
+<body>
+    <h1>Welcome, {{ session['user_name'] }}</h1>
+    <a href="/add">Add Transaction</a> | <a href="/set_budget">Set Budget</a> | <a href="/logout">Logout</a>
+
+    <h2>Your Transactions</h2>
+    <p>Total Income: ${{ total_income }}</p>
+    <p>Total Expenses: ${{ total_expenses }}</p>
+    <p>Total Savings: ${{ total_savings }}</p>
+
+    {% if budget_notifications %}
+    <h3>Budget Notifications</h3>
+    <ul>
+        {% for notification in budget_notifications %}
+        <li>{{ notification }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if transactions %}
+    <h3>Transactions</h3>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.transaction_type }}</td>
+                <td>{{ transaction.description }}</td>
+                <td>${{ transaction.amount }}</td>
+                <td>{{ transaction.category }}</td>
+                <td>
+                    <!-- Edit and Delete links for Transactions -->
+                    <a href="{{ url_for('edit_transaction', transaction_id=transaction.id) }}">Edit</a> |
+                    <a href="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" onclick="return confirm('Are you sure you want to delete this transaction?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No transactions found. Start by adding one!</p>
+    {% endif %}
+
+    <h2>Financial Reports</h2>
+    <ul>
+        <li><a href="{{ url_for('monthly_report') }}">View Monthly Report</a></li>
+        <li><a href="{{ url_for('yearly_report') }}">View Yearly Report</a></li>
+    </ul>
+
+    <!-- Monthly Report Section -->
+    {% if period == 'monthly' %}
+    <h3>Monthly Report for {{ current_month }}</h3>
+    <p><strong>Total Income:</strong> ${{ total_income }}</p>
+    <p><strong>Total Expenses:</strong> ${{ total_expenses }}</p>
+    <p><strong>Total Savings:</strong> ${{ total_savings }}</p>
+
+    <h4>Expenses in this Month</h4>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in monthly_expenses %}
+            <tr>
+                <td>{{ expense['description'] }}</td>
+                <td>${{ expense['amount'] }}</td>
+                <td>{{ expense['category'] }}</td>
+                <td>{{ expense['date'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Yearly Report Section -->
+    {% if period == 'yearly' %}
+    <h3>Yearly Report for {{ current_year }}</h3>
+    <p><strong>Total Income:</strong> ${{ total_income }}</p>
+    <p><strong>Total Expenses:</strong> ${{ total_expenses }}</p>
+    <p><strong>Total Savings:</strong> ${{ total_savings }}</p>
+    {% endif %}
+
+    <!-- Monthly Budget Section -->
+    <h3>Current Monthly Budget Summary</h3>
+    {% if monthly_budgets %}
+        <ul>
+            {% for category, amount in monthly_budgets.items() %}
+            <li>
+                <strong>{{ category }}:</strong> ${{ amount }}
+                <!-- Edit and Delete links for Budgets -->
+                <a href="{{ url_for('edit_budget', budget_id=category) }}">Edit</a> |
+                <a href="{{ url_for('delete_budget', budget_id=category) }}" onclick="return confirm('Are you sure you want to delete this budget?')">Delete</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No monthly budgets set yet. <a href="{{ url_for('set_budget') }}">Set a budget now.</a></p>
+    {% endif %}
+</body>
+</html>

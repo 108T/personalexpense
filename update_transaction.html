@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Transaction</title>
+</head>
+<body>
+    <h1>Update Transaction</h1>
+    
+    <form method="POST">
+        <input type="text" name="amount" value="{{ transaction_data['amount'] }}" required>
+        <input type="text" name="description" value="{{ transaction_data['description'] }}" required>
+        <input type="text" name="category" value="{{ transaction_data['category'] }}" required>
+        <select name="transaction_type">
+            <option value="Income" {% if transaction_data['transaction_type'] == 'Income' %}selected{% endif %}>Income</option>
+            <option value="Expense" {% if transaction_data['transaction_type'] == 'Expense' %}selected{% endif %}>Expense</option>
+        </select>
+        <button type="submit">Update</button>
+    </form>    
+
+    <a href="dashboard.html">Back to Dashboard</a>
+</body>
+</html>
